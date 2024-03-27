@@ -3,7 +3,6 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 
 public class User {
-    private int index = 0;
     private String firstName;
     private String lastName;
     private String gender;
@@ -41,16 +40,11 @@ public class User {
         this.city = city;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public User(String firstName, String lastName, String gender, String city,int index) {
+    public User(String firstName, String lastName, String gender, String city) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.city = city;
-        this.index = index;
     }
 
     public String fullName() {
