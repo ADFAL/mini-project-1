@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
 
 public class User {
     private String firstName;
@@ -48,5 +49,15 @@ public class User {
 
     public String fullName() {
         return String.format("%s %s", firstName, lastName);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("Hi, i'm %s, i'm %s.\nI live in %s.",
+                fullName(),
+                gender.equals("male") ? "♂" : "♀",
+                city);
+
     }
 }
