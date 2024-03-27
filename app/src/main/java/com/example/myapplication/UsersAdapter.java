@@ -3,11 +3,13 @@ package com.example.myapplication;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -16,12 +18,10 @@ import java.util.ArrayList;
 public class UsersAdapter extends BaseAdapter {
     Context context;
     LayoutInflater inflater;
-    ArrayList<User> users; // arraylist
+    ArrayList<User> users;
     long touchStartTime = 0;
-    boolean delete = false;
-    int index;
 
-    public UsersAdapter(Context context, ArrayList<User> users) {
+    public UsersAdapter(Context context, int simple_list_item_1, ArrayList<User> users) {
         this.users = users;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -53,15 +53,15 @@ public class UsersAdapter extends BaseAdapter {
         tvUsersItmFullName.setText(user.fullName());
         tvUsersItmCity.setText(user.getCity());
 
-        convertView.setOnClickListener(null);
         View finalConvertView = convertView;
+        convertView.setOnClickListener(null);
 
         convertView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void swipeLeft() {
                 finalConvertView.setBackgroundColor(Color.parseColor("#4DFF0000"));
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Attention").setMessage("Do you want to remove the user?"+user.fullName());
+                builder.setTitle("Attention").setMessage("Do you want to remove the user? ");
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -71,17 +71,13 @@ public class UsersAdapter extends BaseAdapter {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        delete = true;
-                        index = user.getIndex();
+                        users.remove(position);
+                        notifyDataSetChanged();
                     }
                 });
                 builder.show();
             }
         });
-
-        if (delete) {
-            users.remove(index);
-        }
 
         return convertView;
     }
