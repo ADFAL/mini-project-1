@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnUsersActLoadUsers = findViewById(R.id.btnUsersActLoadUsers);
         tvUsersActQuit = findViewById(R.id.tvUsersActQuit);
-        lvUsersActUsers = findViewById(R.id.lvUsersActUsers); // list View
+        lvUsersActUsers = findViewById(R.id.lvUsersActUsers);
 
         btnUsersActLoadUsers.setOnClickListener(this);
         tvUsersActQuit.setOnClickListener(this);
@@ -42,19 +42,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
             }
         });
-
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnUsersActLoadUsers) {
-            UsersAdapter adapter = new UsersAdapter(this, getUsers());
-            lvUsersActUsers.setAdapter(adapter); // list View
+            UsersAdapter adapter = new UsersAdapter(this,R.layout.item_user,getUsers());
+            adapter.notifyDataSetChanged();
+            lvUsersActUsers.setAdapter(adapter);
         }
     }
 
     private ArrayList<User> getUsers() {
-        ArrayList<User> usersFullNames = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
 
         try {
             InputStream inputStream = getAssets().open("users.json");
@@ -77,16 +77,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject user = jsonArray.getJSONObject(i);
                 JSONObject userName = user.getJSONObject("name");
 
-                usersFullNames.add(new User(
+                users.add(new User(
                         userName.getString("first"),
                         userName.getString("last"),
                         user.getString("gender"),
-                        user.getString("city"),i));
+                        user.getString("city")));
+
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
-        return usersFullNames;
+        return users;
     }
 }
