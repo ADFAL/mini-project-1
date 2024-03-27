@@ -1,8 +1,9 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,8 +16,10 @@ import java.util.ArrayList;
 public class UsersAdapter extends BaseAdapter {
     Context context;
     LayoutInflater inflater;
-    ArrayList<User> users;
+    ArrayList<User> users; // arraylist
     long touchStartTime = 0;
+    boolean delete = false;
+    int index;
 
     public UsersAdapter(Context context, ArrayList<User> users) {
         this.users = users;
@@ -50,22 +53,35 @@ public class UsersAdapter extends BaseAdapter {
         tvUsersItmFullName.setText(user.fullName());
         tvUsersItmCity.setText(user.getCity());
 
-        convertView.setOnTouchListener(new View.OnTouchListener() {
+        convertView.setOnClickListener(null);
+        View finalConvertView = convertView;
+
+        convertView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    touchStartTime = System.currentTimeMillis();
-                }
-                else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    long touchDuration = System.currentTimeMillis() - touchStartTime;
-                    if (touchDuration >= 1000 && touchDuration < 2000) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle(String.format("Details of user %d",position+1)).setMessage(user.toString()).show();
+            public void swipeLeft() {
+                finalConvertView.setBackgroundColor(Color.parseColor("#4DFF0000"));
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Attention").setMessage("Do you want to remove the user?"+user.fullName());
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finalConvertView.setBackgroundColor(Color.class.getModifiers());
                     }
-                }
-                return true;
+                });
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        delete = true;
+                        index = user.getIndex();
+                    }
+                });
+                builder.show();
             }
         });
+
+        if (delete) {
+            users.remove(index);
+        }
 
         return convertView;
     }
