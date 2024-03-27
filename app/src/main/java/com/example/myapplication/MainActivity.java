@@ -2,15 +2,10 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,20 +19,29 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button btnUsersActLoadUsers, btnUsersActQuit;
+    Button btnUsersActLoadUsers;
+    TextView tvUsersActQuit;
     ListView lvUsersActUsers;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         btnUsersActLoadUsers = findViewById(R.id.btnUsersActLoadUsers);
-        btnUsersActQuit = findViewById(R.id.btnUsersActQuit);
-        lvUsersActUsers = findViewById(R.id.lvUsersActUsers);
+        tvUsersActQuit = findViewById(R.id.tvUsersActQuit);
+        lvUsersActUsers = findViewById(R.id.lvUsersActUsers); // list View
 
         btnUsersActLoadUsers.setOnClickListener(this);
-        btnUsersActQuit.setOnClickListener(this);
+        tvUsersActQuit.setOnClickListener(this);
+
+        tvUsersActQuit.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void swipeLeft() {
+                finish();
+            }
+        });
 
     }
 
@@ -45,9 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v.getId() == R.id.btnUsersActLoadUsers) {
             UsersAdapter adapter = new UsersAdapter(this, getUsers());
-            lvUsersActUsers.setAdapter(adapter);
-        } else if (v.getId() == R.id.btnUsersActQuit) {
-            finish();
+            lvUsersActUsers.setAdapter(adapter); // list View
         }
     }
 
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         userName.getString("first"),
                         userName.getString("last"),
                         user.getString("gender"),
-                        user.getString("city")));
+                        user.getString("city"),i));
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
