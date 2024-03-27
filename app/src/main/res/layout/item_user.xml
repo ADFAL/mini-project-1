@@ -29,14 +29,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvUsersItmFullName" />
 
-    <ImageButton
-        android:id="@+id/tvUsersItemDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUsersItmCity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvUsersItmFullName"
-        app:srcCompat="@drawable/baseline_more_horiz_24" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
