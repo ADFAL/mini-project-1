@@ -5,26 +5,33 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 
 public class UsersAdapter extends BaseAdapter {
+    final int DOUBLE_CLICK_TIMEOUT = 250;
+
     Context context;
     LayoutInflater inflater;
     ArrayList<User> users;
-    long touchStartTime = 0;
+    FragmentManager fragmentManager;
 
-    public UsersAdapter(Context context, int simple_list_item_1, ArrayList<User> users) {
+    public UsersAdapter(Context context, ArrayList<User> users, FragmentManager fragmentManager) {
         this.users = users;
         this.context = context;
         inflater = LayoutInflater.from(context);
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -49,34 +56,52 @@ public class UsersAdapter extends BaseAdapter {
 
         TextView tvUsersItmFullName = convertView.findViewById(R.id.tvUsersItmFullName);
         TextView tvUsersItmCity = convertView.findViewById(R.id.tvUsersItmCity);
+        ImageView ivUserItmChecked = convertView.findViewById(R.id.ivUserItmChecked);
+        Button btnUserItmDetails = convertView.findViewById(R.id.btnUserItmDetails);
 
         tvUsersItmFullName.setText(user.fullName());
         tvUsersItmCity.setText(user.getCity());
 
-        View finalConvertView = convertView;
-        convertView.setOnClickListener(null);
-
-        convertView.setOnTouchListener(new OnSwipeTouchListener(context) {
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void swipeLeft() {
-                finalConvertView.setBackgroundColor(Color.parseColor("#4DFF0000"));
+            public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Attention").setMessage("Do you want to remove the user? ");
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finalConvertView.setBackgroundColor(Color.class.getModifiers());
-                    }
-                });
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        users.remove(position);
-                        notifyDataSetChanged();
-                    }
-                });
-                builder.show();
+
+                builder.setTitle(String.format("Details of user %d", position + 1))
+                        .setMessage(user.toString())
+                        .show();
+
+                return false;
             }
+        });
+
+        convertView.setOnTouchListener(new View.OnTouchListener() {
+            long lastClickTime = 0;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        Toast.makeText(context, "down", Toast.LENGTH_SHORT).show();
+//                        break;
+                    case MotionEvent.ACTION_UP:
+                        long clickTime = System.currentTimeMillis();
+
+                        if ((clickTime - lastClickTime) <= DOUBLE_CLICK_TIMEOUT)
+                            ivUserItmChecked.setVisibility(ivUserItmChecked.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
+                        else
+                            lastClickTime = clickTime;
+
+                        break;
+                }
+
+                return true;
+            }
+        });
+
+        btnUserItmDetails.setOnClickListener(v -> {
+            UserDetailsDialog userDetailsDialog = new UserDetailsDialog(user);
+            userDetailsDialog.show(fragmentManager, null);
         });
 
         return convertView;
