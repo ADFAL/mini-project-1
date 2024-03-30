@@ -7,6 +7,7 @@ public class User {
     private String lastName;
     private String gender;
     private String city;
+    private String urlImage;
 
     public String getFirstName() {
         return firstName;
@@ -40,11 +41,16 @@ public class User {
         this.city = city;
     }
 
-    public User(String firstName, String lastName, String gender, String city) {
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public User(String firstName, String lastName, String gender, String city,String urlImage) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.city = city;
+        this.urlImage = urlImage;
     }
 
     public String fullName() {

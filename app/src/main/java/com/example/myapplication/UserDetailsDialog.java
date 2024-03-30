@@ -1,15 +1,21 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class UserDetailsDialog extends DialogFragment {
     User user;
@@ -31,10 +37,20 @@ public class UserDetailsDialog extends DialogFragment {
         TextView tvUserDetailsItmFirstName = view.findViewById(R.id.tvUserDetailsItmFirstName);
         TextView tvUserDetailsItmLastName = view.findViewById(R.id.tvUserDetailsItmLastName);
         TextView tvUserDetailsItmCity = view.findViewById(R.id.tvUserDetailsItmCity);
+        ImageView imageView = view.findViewById(R.id.imageView);
 
         tvUserDetailsItmFirstName.setText(user.getFirstName());
         tvUserDetailsItmLastName.setText(user.getLastName());
         tvUserDetailsItmCity.setText(user.getCity());
+
+        try {
+            InputStream inputStream = getContext().getAssets().open(user.getUrlImage());
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            imageView.setImageBitmap(bitmap);
+            inputStream.close();;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (user.getGender().equals("male"))
             view.setBackgroundColor(Color.parseColor("#ADD8E6"));
