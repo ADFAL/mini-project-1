@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="btnLoad">Load Users</string>
+    <string name="shortName">Swipe left to quit</string>
 </resources>
