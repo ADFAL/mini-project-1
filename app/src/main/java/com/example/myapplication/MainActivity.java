@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String fullName = String.format("%s %s", userName.get("first"), userName.get("last"));
 
                     String gender  = user.getString("gender");
-                    String city = user.get("city").toString();
+                    String city = user.getString("city");
 
                     stringBuilderFullNames.append(fullName);
                     stringBuilderCities.append(city);
